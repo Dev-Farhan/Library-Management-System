@@ -1,0 +1,38 @@
+---
+## Library Management System Documentation
+
+### Schema Design and Assumptions
+
+I have designed the MongoDB schema to accommodate three main entities: Users, Books, and Borrowed Books. Here's a brief overview of the schema for each entity:
+
+1. **Users:**
+   - `name`: String, the name of the user.
+   - `email`: String, the email address of the user.
+
+2. **Books:**
+   - `title`: String, the title of the book.
+   - `author`: String, the author of the book.
+
+3. **Borrowed Books:**
+   - `userId`: Reference to the User who borrowed the book.
+   - `bookId`: Reference to the Book that was borrowed.
+   - `borrowed_date`: Date, the date when the book was borrowed.
+   - `due_date`: Date, the date when the book is due to be returned.
+
+### Design Decisions
+
+- I choose to use references (`userId` and `bookId`) in the `Borrowed Books` schema to establish relationships between entities. This design allows us to easily retrieve detailed user and book information when needed.
+
+- For the borrowing and returning operations, I implemented transactions to ensure data consistency. Transactions help maintain atomicity even in the face of failures during the process.
+
+- To optimize query performance, I implemented appropriate indexing on fields that are frequently used in queries, such as `userId`, `bookId`, `borrowed_date`, and `due_date`.
+
+### Challenges and Solutions
+
+**Challenge:** Ensuring accurate date calculations for `due_date` while borrowing books.
+**Solution:** I encountered challenges in calculating accurate due dates while borrowing books. By using the `Date` object's methods, I able to ensure precise calculations for due dates based on a 2-week borrowing period.
+
+**Challenge:** Implementing transactions for borrowing and returning operations.
+**Solution:** Integrating transactions in my application required careful consideration of Mongoose's session and transaction management. I utilized the `startSession` method to begin a transaction, performed operations within the transaction, and committed or aborted the transaction based on the outcome of these operations.
+
+---
